@@ -220,19 +220,16 @@ with st.sidebar:
     st.button("Restaurar escenario base", on_click=restaurar_base, use_container_width=True)
     costo_fp = control_costo(
         "fp", "Costo de falso positivo (USD)", base_fp,
-        "FP: préstamo pagado clasificado como riesgoso. Representa una oportunidad de beneficio perdida.",
-    )
+        "FP: préstamo pagado clasificado como riesgoso. Representa una oportunidad de beneficio perdida.",)
     costo_fn = control_costo(
         "fn", "Costo de falso negativo (USD)", base_fn,
-        "FN: préstamo incumplido clasificado como pagador. Representa el costo supuesto del incumplimiento.",
-    )
+        "FN: préstamo incumplido clasificado como pagador. Representa el costo supuesto del incumplimiento.",)
     st.divider()
     modo = st.radio("Regla de decisión", MODOS, key="modo")
     st.session_state.setdefault("manual", float(round(umbral_cv, 4)))
     manual = st.slider(
         "Umbral manual", min_value=0.0, max_value=1.0, step=0.0001,
-        format="%.4f", key="manual", disabled=modo != "Manual",
-    )
+        format="%.4f", key="manual", disabled=modo != "Manual",)
     if modo != "Manual":
         st.caption("El slider del umbral se activa al elegir Manual. Su valor no se aplica en las otras reglas.")
     st.caption(f"Costos base: FP {numero(base_fp, 2)} USD · FN {numero(base_fn, 2)} USD.")
@@ -241,8 +238,8 @@ with st.sidebar:
 # Regla aplicada y evaluación. Se preserva el umbral empírico con toda su precisión.
 teorico = costo_fp / (costo_fp + costo_fn)
 umbrales_por_modo = {
-    MODOS[0]: umbral_cv, MODOS[1]: teorico, MODOS[2]: manual, MODOS[3]: 0.5
-}
+    MODOS[0]: umbral_cv, MODOS[1]: teorico, MODOS[2]: manual, MODOS[3]: 0.5}
+
 umbral = umbrales_por_modo[modo]
 es_base = np.isclose(costo_fp, base_fp) and np.isclose(costo_fn, base_fn)
 resultado = evaluar(umbral, costo_fp, costo_fn)
@@ -255,17 +252,14 @@ ahorro_porcentaje = 100 * ahorro / costo_base_actual if costo_base_actual else N
 st.subheader("1. Resultado del escenario")
 st.markdown(
     f"**Regla activa: {modo}.** Se clasifica como riesgoso un préstamo desde "
-    f"una probabilidad estimada de incumplimiento de **{porcentaje(umbral)}**."
-)
+    f"una probabilidad estimada de incumplimiento de **{porcentaje(umbral)}**.")
 st.caption(
     f"Umbral aplicado: {numero(umbral, 6)} · Teórico: {numero(teorico, 6)} · "
-    f"Relación de costos FN/FP: {numero(costo_fn / costo_fp, 2)}"
-)
+    f"Relación de costos FN/FP: {numero(costo_fn / costo_fp, 2)}")
 if not es_base:
     st.info(
         "Estás explorando costos distintos de los originales. El umbral teórico y los costos "
-        "se actualizan; el umbral empírico sigue siendo el seleccionado para el escenario base."
-    )
+        "se actualizan; el umbral empírico sigue siendo el seleccionado para el escenario base.")
 
 c1, c2 = st.columns(2)
 with c1:
@@ -291,8 +285,7 @@ with c4:
             detalle_ahorro, "#16866A" if ahorro >= 0 else "#BE3455")
 st.caption(
     f"La referencia de 0,5 cuesta {numero(costo_base_actual, 2)} USD con estos mismos costos. "
-    "Los ahorros son estimaciones del escenario académico, no beneficios realizados."
-)
+    "Los ahorros son estimaciones del escenario académico, no beneficios realizados.")
 
 if resultado["TP"] + resultado["FN"] == 0:
     st.info("No hay incumplimientos reales en los datos; el recall no está definido y se muestra como 0 por convención.")
@@ -303,8 +296,7 @@ else:
         f"**Lectura del escenario:** se detectan {numero(resultado['TP'])} de "
         f"{numero(resultado['TP'] + resultado['FN'])} incumplimientos reales "
         f"({porcentaje(resultado['Recall'])}). Entre los préstamos clasificados como riesgosos, "
-        f"el {porcentaje(resultado['Precisión'])} realmente incumplió."
-    )
+        f"el {porcentaje(resultado['Precisión'])} realmente incumplió.")
 
 
 # Matriz con colores por tipo de resultado y costos por celda.
@@ -315,9 +307,9 @@ with izquierda:
     etiquetas = [
         [f"Pagador identificado (TN)\n{numero(resultado['TN'])} préstamos\n0 USD",
          f"Falsa alarma (FP)\n{numero(resultado['FP'])} préstamos\n{numero(resultado['FP'] * costo_fp, 2)} USD"],
-        [f"Incumplimiento no detectado (FN)\n{numero(resultado['FN'])} préstamos\n{numero(resultado['FN'] * costo_fn, 2)} USD",
-         f"Incumplimiento detectado (TP)\n{numero(resultado['TP'])} préstamos\n0 USD"],
-    ]
+        [f"Incumplimiento\nno detectado (FN)\n{numero(resultado['FN'])} préstamos\n{numero(resultado['FN'] * costo_fn, 2)} USD",
+         f"Incumplimiento\ndetectado (TP)\n{numero(resultado['TP'])} préstamos\n0 USD"],]
+    
     fig, ax = plt.subplots(figsize=(7.5, 5))
     ax.imshow([[0, 1], [2, 0]], cmap=ListedColormap(["#DBF1EA", "#FFF0CE", "#FCE0E4"]), vmin=0, vmax=2)
     for fila in range(2):
