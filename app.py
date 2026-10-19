@@ -293,7 +293,7 @@ elif resultado["TP"] + resultado["FP"] == 0:
     st.info("Esta regla no marca ningún préstamo como riesgoso. La precisión no está definida y se muestra como 0 por convención.")
 else:
     st.write(
-        f"**Lectura del escenario:** se detectan {numero(resultado['TP'])} de "
+        f"**Con esta configuración,** se detectan {numero(resultado['TP'])} de "
         f"{numero(resultado['TP'] + resultado['FN'])} incumplimientos reales "
         f"({porcentaje(resultado['Recall'])}). Entre los préstamos clasificados como riesgosos, "
         f"el {porcentaje(resultado['Precisión'])} realmente incumplió.")
@@ -322,7 +322,9 @@ with izquierda:
     fig.tight_layout()
     st.pyplot(fig)
     plt.close(fig)
-    st.caption("Verde: aciertos. Ámbar: falsos positivos. Rosado: falsos negativos. Los colores identifican tipos de resultado, no cantidades.")
+    st.caption("Verde: préstamos clasificados correctamente.")
+    st.caption("Amarillo: préstamos pagados que se marcaron como riesgosos.")
+    st.caption("Rosado: incumplimientos que el modelo no detectó.")
 
 with derecha:
     st.markdown("**Composición del costo**")
@@ -339,11 +341,11 @@ with derecha:
     st.metric("F1: equilibrio entre recall y precisión", numero(resultado["F1"], 4))
     st.caption("F1 varía entre 0 y 1. Resume recall y precisión, pero no incorpora los costos monetarios.")
     st.write(
-        "Bajar el umbral marca más préstamos como riesgosos: puede detectar más incumplimientos "
-        "y generar más falsas alarmas. Subirlo produce el efecto contrario. La precisión no tiene "
-        "por qué cambiar de forma monótona."
-    )
-
+    "Con un umbral más bajo, el modelo marca más préstamos como riesgosos. "
+    "Esto puede ayudar a detectar más incumplimientos, pero también puede "
+    "marcar como riesgosos préstamos que sí fueron pagados. "
+    "Con un umbral más alto, se marcan menos préstamos y pueden quedar "
+    "más incumplimientos sin detectar.")
 
 # Curva exploratoria de prueba. No se selecciona su mínimo.
 st.subheader("3. Cómo cambia el costo al mover el umbral")
