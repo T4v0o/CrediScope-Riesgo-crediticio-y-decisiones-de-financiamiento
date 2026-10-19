@@ -1,1 +1,2 @@
-# CrediScope-Riesgo-crediticio-y-decisiones-de-financiamiento
+# CrediScope: 
+Riesgo crediticio y decisiones de financiamiento
